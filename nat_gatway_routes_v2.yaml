@@ -1,0 +1,1258 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: test template
+Parameters:
+  ExtSubnets:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /org/member/extended-cidr/ext-cidrs-details
+    Description: ext cidrs details
+    AllowedPattern: ^/org/member/extended-cidr/ext-cidrs-details$
+    ConstraintDescription: VPC /org/member/extended-cidr/ext-cidrs-details is standard and only possible option
+  PrivateSubnets:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /org/member/private-vpc/private-subnets-details
+    Description: ext cidrs details
+    AllowedPattern: ^/org/member/private-vpc/private-subnets-details$
+    ConstraintDescription: VPC /org/member/private-vpc/private-subnets-details is standard and only possible option
+
+Mappings:
+  NRoute:
+    cidr:
+      C10: 10.0.0.0/8
+      C192: 192.168.0.0/16
+      C172: 172.16.0.0/12
+      C147: 147.108.0.0/16
+
+Conditions:
+  HasExtSubnets: !Not
+          - !Equals
+              - !Ref ExtSubnets
+              - 'false'
+  HasPrivSubnets: !Not
+          - !Equals
+              - !Ref PrivateSubnets
+              - 'false'
+
+  PrivateSubnet1a: !And
+        - !Condition HasPrivSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 0, !Split [ ",", !Ref PrivateSubnets ]]]], !Sub "${AWS::Region}a" ]
+  PrivateSubnet2a: !And
+        - !Condition HasPrivSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 1, !Split [ ",", !Ref PrivateSubnets ]]]], !Sub "${AWS::Region}a" ]
+  PrivateSubnet3a: !And
+        - !Condition HasPrivSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 2, !Split [ ",", !Ref PrivateSubnets ]]]], !Sub "${AWS::Region}a" ]
+  PrivateSubnet4a: !And
+        - !Condition HasPrivSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 3, !Split [ ",", !Ref PrivateSubnets ]]]], !Sub "${AWS::Region}a" ]
+  PrivateSubnet1b: !And
+        - !Condition HasPrivSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 0, !Split [ ",", !Ref PrivateSubnets ]]]], !Sub "${AWS::Region}b" ]
+  PrivateSubnet2b: !And
+        - !Condition HasPrivSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 1, !Split [ ",", !Ref PrivateSubnets ]]]], !Sub "${AWS::Region}b" ]
+  PrivateSubnet3b: !And
+        - !Condition HasPrivSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 2, !Split [ ",", !Ref PrivateSubnets ]]]], !Sub "${AWS::Region}b" ]
+  PrivateSubnet4b: !And
+        - !Condition HasPrivSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 3, !Split [ ",", !Ref PrivateSubnets ]]]], !Sub "${AWS::Region}b" ]
+  PrivateSubnet1c: !And
+        - !Condition HasPrivSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 0, !Split [ ",", !Ref PrivateSubnets ]]]], !Sub "${AWS::Region}c" ]
+  PrivateSubnet2c: !And
+        - !Condition HasPrivSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 1, !Split [ ",", !Ref PrivateSubnets ]]]], !Sub "${AWS::Region}c" ]
+  PrivateSubnet3c: !And
+        - !Condition HasPrivSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 2, !Split [ ",", !Ref PrivateSubnets ]]]], !Sub "${AWS::Region}c" ]
+  PrivateSubnet4c: !And
+        - !Condition HasPrivSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 3, !Split [ ",", !Ref PrivateSubnets ]]]], !Sub "${AWS::Region}c" ]
+  PrivateSubnet1d: !And
+        - !Condition HasPrivSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 0, !Split [ ",", !Ref PrivateSubnets ]]]], !Sub "${AWS::Region}d" ]
+  PrivateSubnet2d: !And
+        - !Condition HasPrivSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 1, !Split [ ",", !Ref PrivateSubnets ]]]], !Sub "${AWS::Region}d" ]
+  PrivateSubnet3d: !And
+        - !Condition HasPrivSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 2, !Split [ ",", !Ref PrivateSubnets ]]]], !Sub "${AWS::Region}d" ]
+  PrivateSubnet4d: !And
+        - !Condition HasPrivSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 3, !Split [ ",", !Ref PrivateSubnets ]]]], !Sub "${AWS::Region}d" ]
+  PrivateSubnet1e: !And
+        - !Condition HasPrivSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 0, !Split [ ",", !Ref PrivateSubnets ]]]], !Sub "${AWS::Region}e" ]
+  PrivateSubnet2e: !And
+        - !Condition HasPrivSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 1, !Split [ ",", !Ref PrivateSubnets ]]]], !Sub "${AWS::Region}e" ]
+  PrivateSubnet3e: !And
+        - !Condition HasPrivSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 2, !Split [ ",", !Ref PrivateSubnets ]]]], !Sub "${AWS::Region}e" ]
+  PrivateSubnet4e: !And
+        - !Condition HasPrivSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 3, !Split [ ",", !Ref PrivateSubnets ]]]], !Sub "${AWS::Region}e" ]
+  PrivateSubnet1f: !And
+        - !Condition HasPrivSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 0, !Split [ ",", !Ref PrivateSubnets ]]]], !Sub "${AWS::Region}f" ]
+  PrivateSubnet2f: !And
+        - !Condition HasPrivSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 1, !Split [ ",", !Ref PrivateSubnets ]]]], !Sub "${AWS::Region}f" ]
+  PrivateSubnet3f: !And
+        - !Condition HasPrivSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 2, !Split [ ",", !Ref PrivateSubnets ]]]], !Sub "${AWS::Region}f" ]
+  PrivateSubnet4f: !And
+        - !Condition HasPrivSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 3, !Split [ ",", !Ref PrivateSubnets ]]]], !Sub "${AWS::Region}f" ]
+
+# az a 1
+
+  Has1aAz1: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]], !Sub "${AWS::Region}a" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+  Has1aAz2: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}a" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+  Has1aAz3: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}a" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+  Has1aAz4: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}a" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+  Has1aAz5: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}a" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+
+
+# az b 1
+
+  Has1bAz1: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]], !Sub "${AWS::Region}b" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+  Has1bAz2: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}b" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+  Has1bAz3: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}b" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+  Has1bAz4: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}b" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+  Has1bAz5: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}b" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+
+# az c 1
+
+  Has1cAz1: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]], !Sub "${AWS::Region}c" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+  Has1cAz2: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}c" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+  Has1cAz3: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}c" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+  Has1cAz4: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}c" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+  Has1cAz5: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}c" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+
+# az d 1
+
+  Has1dAz1: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]], !Sub "${AWS::Region}d" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+  Has1dAz2: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}d" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+  Has1dAz3: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}d" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+  Has1dAz4: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}d" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+  Has1dAz5: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}d" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+
+# az e 1
+
+  Has1eAz1: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]], !Sub "${AWS::Region}e" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+  Has1eAz2: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}e" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+  Has1eAz3: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}e" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+  Has1eAz4: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}e" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+  Has1eAz5: !And
+        - !Condition HasExtSubnets
+        - !Equals [ !Select [ 1, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}e" ]
+        - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+# az f 1
+
+  Has1fAz1: !And
+    - !Condition HasExtSubnets
+    - !Equals [ !Select [ 1, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}f" ]
+    - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+  Has1fAz2: !And
+    - !Condition HasExtSubnets
+    - !Equals [ !Select [ 1, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}f" ]
+    - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+  Has1fAz3: !And
+    - !Condition HasExtSubnets
+    - !Equals [ !Select [ 1, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}f" ]
+    - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+  Has1fAz4: !And
+    - !Condition HasExtSubnets
+    - !Equals [ !Select [ 1, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}f" ]
+    - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+  Has1fAz5: !And
+    - !Condition HasExtSubnets
+    - !Equals [ !Select [ 1, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ] ] ] ], !Sub "${AWS::Region}f" ]
+    - !Not [ !Equals [!Select [ 0, !Split [ ".",!Select [ 2, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]]], "10"] ]
+
+
+  Has1aSubnet: !Or [ !Condition Has1aAz1, !Condition Has1aAz2, !Condition Has1aAz3, !Condition Has1aAz4, !Condition Has1aAz5 ]
+
+  Has1bSubnet: !Or [ !Condition Has1bAz1, !Condition Has1bAz2, !Condition Has1bAz3, !Condition Has1bAz4, !Condition Has1bAz5 ]
+
+  Has1cSubnet: !Or [ !Condition Has1cAz1, !Condition Has1cAz2, !Condition Has1cAz3, !Condition Has1cAz4, !Condition Has1cAz5 ]
+
+  Has1dSubnet: !Or [ !Condition Has1dAz1, !Condition Has1dAz2, !Condition Has1dAz3, !Condition Has1dAz4, !Condition Has1dAz5 ]
+
+  Has1eSubnet: !Or [ !Condition Has1eAz1, !Condition Has1eAz2, !Condition Has1eAz3, !Condition Has1eAz4, !Condition Has1eAz5 ]
+
+  Has1fSubnet: !Or [ !Condition Has1fAz1, !Condition Has1fAz2, !Condition Has1fAz3, !Condition Has1fAz4, !Condition Has1fAz5 ]
+
+Resources:
+  NatAza:
+    Condition: Has1aSubnet
+    Type: AWS::EC2::NatGateway
+    Properties:
+      ConnectivityType: "private"
+      SubnetId: !If
+      - PrivateSubnet1a
+      - !Select [ 0, !Split [ ":", !Select [ 0, !Split [ ",", !Ref PrivateSubnets ]]]]
+      - !If
+        - PrivateSubnet2a
+        - !Select [ 0, !Split [ ":", !Select [ 1, !Split [ ",", !Ref PrivateSubnets ]]]]
+        - !If
+          - PrivateSubnet3a
+          - !Select [ 0, !Split [ ":", !Select [ 2, !Split [ ",", !Ref PrivateSubnets ] ] ] ]
+          - - !If
+              - PrivateSubnet4a
+              - !Select [ 0, !Split [ ":", !Select [ 3, !Split [ ",", !Ref PrivateSubnets ] ] ] ]
+              - "Error"
+  NatAzb:
+    Condition: Has1bSubnet
+    Type: AWS::EC2::NatGateway
+    Properties:
+      ConnectivityType: "private"
+      SubnetId: !If
+      - PrivateSubnet1b
+      - !Select [ 0, !Split [ ":", !Select [ 0, !Split [ ",", !Ref PrivateSubnets ]]]]
+      - !If
+        - PrivateSubnet2b
+        - !Select [ 0, !Split [ ":", !Select [ 1, !Split [ ",", !Ref PrivateSubnets ]]]]
+        - !If
+          - PrivateSubnet3b
+          - !Select [ 0, !Split [ ":", !Select [ 2, !Split [ ",", !Ref PrivateSubnets ] ] ] ]
+          - - !If
+              - PrivateSubnet4b
+              - !Select [ 0, !Split [ ":", !Select [ 3, !Split [ ",", !Ref PrivateSubnets ] ] ] ]
+              - "Error"
+  NatAzc:
+    Condition: Has1cSubnet
+    Type: AWS::EC2::NatGateway
+    Properties:
+      ConnectivityType: "private"
+      SubnetId: !If
+      - PrivateSubnet1c
+      - !Select [ 0, !Split [ ":", !Select [ 0, !Split [ ",", !Ref PrivateSubnets ]]]]
+      - !If
+        - PrivateSubnet2c
+        - !Select [ 0, !Split [ ":", !Select [ 1, !Split [ ",", !Ref PrivateSubnets ]]]]
+        - !If
+          - PrivateSubnet3c
+          - !Select [ 0, !Split [ ":", !Select [ 2, !Split [ ",", !Ref PrivateSubnets ] ] ] ]
+          - - !If
+              - PrivateSubnet4c
+              - !Select [ 0, !Split [ ":", !Select [ 3, !Split [ ",", !Ref PrivateSubnets ] ] ] ]
+              - "Error"
+  NatAzd:
+    Condition: Has1dSubnet
+    Type: AWS::EC2::NatGateway
+    Properties:
+      ConnectivityType: "private"
+      SubnetId: !If
+      - PrivateSubnet1d
+      - !Select [ 0, !Split [ ":", !Select [ 0, !Split [ ",", !Ref PrivateSubnets ]]]]
+      - !If
+        - PrivateSubnet2d
+        - !Select [ 0, !Split [ ":", !Select [ 1, !Split [ ",", !Ref PrivateSubnets ]]]]
+        - !If
+          - PrivateSubnet3d
+          - !Select [ 0, !Split [ ":", !Select [ 2, !Split [ ",", !Ref PrivateSubnets ] ] ] ]
+          - - !If
+              - PrivateSubnet4d
+              - !Select [ 0, !Split [ ":", !Select [ 3, !Split [ ",", !Ref PrivateSubnets ] ] ] ]
+              - "Error"
+  NatAze:
+    Condition: Has1eSubnet
+    Type: AWS::EC2::NatGateway
+    Properties:
+      ConnectivityType: "private"
+      SubnetId: !If
+      - PrivateSubnet1e
+      - !Select [ 0, !Split [ ":", !Select [ 0, !Split [ ",", !Ref PrivateSubnets ]]]]
+      - !If
+        - PrivateSubnet2e
+        - !Select [ 0, !Split [ ":", !Select [ 1, !Split [ ",", !Ref PrivateSubnets ]]]]
+        - !If
+          - PrivateSubnet3e
+          - !Select [ 0, !Split [ ":", !Select [ 2, !Split [ ",", !Ref PrivateSubnets ] ] ] ]
+          - - !If
+              - PrivateSubnet4e
+              - !Select [ 0, !Split [ ":", !Select [ 3, !Split [ ",", !Ref PrivateSubnets ] ] ] ]
+              - "Error"
+  NatAzf:
+    Condition: Has1fSubnet
+    Type: AWS::EC2::NatGateway
+    Properties:
+      ConnectivityType: "private"
+      SubnetId: !If
+      - PrivateSubnet1f
+      - !Select [ 0, !Split [ ":", !Select [ 0, !Split [ ",", !Ref PrivateSubnets ]]]]
+      - !If
+        - PrivateSubnet2f
+        - !Select [ 0, !Split [ ":", !Select [ 1, !Split [ ",", !Ref PrivateSubnets ]]]]
+        - !If
+          - PrivateSubnet3f
+          - !Select [ 0, !Split [ ":", !Select [ 2, !Split [ ",", !Ref PrivateSubnets ] ] ] ]
+          - - !If
+              - PrivateSubnet4f
+              - !Select [ 0, !Split [ ":", !Select [ 3, !Split [ ",", !Ref PrivateSubnets ] ] ] ]
+              - "Error"
+# route az1
+  RAza1r10:
+    Condition: Has1aAz1
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAza
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAza1r192:
+    Condition: Has1aAz1
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAza
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAza1r172:
+    Condition: Has1aAz1
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAza
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAza1r147:
+    Condition: Has1aAz1
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAza
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+###
+  RAza2r10:
+    Condition: Has1aAz2
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAza
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAza2r192:
+    Condition: Has1aAz2
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAza
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAza2r172:
+    Condition: Has1aAz2
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAza
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAza2r147:
+    Condition: Has1aAz2
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAza
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+###
+  RAza3r10:
+    Condition: Has1aAz3
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAza
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAza3r192:
+    Condition: Has1aAz3
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAza
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAza3r172:
+    Condition: Has1aAz3
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAza
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAza3r147:
+    Condition: Has1aAz3
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAza
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+###
+  RAza4r10:
+    Condition: Has1aAz4
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAza
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAza4r192:
+    Condition: Has1aAz4
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAza
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAza4r172:
+    Condition: Has1aAz4
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAza
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAza4r147:
+    Condition: Has1aAz4
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAza
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+###
+  RAza5r10:
+    Condition: Has1aAz5
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAza
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAza5r192:
+    Condition: Has1aAz5
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAza
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAza5r172:
+    Condition: Has1aAz5
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAza
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAza5r147:
+    Condition: Has1aAz5
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAza
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+# route az b
+  RAzb1r10:
+    Condition: Has1bAz1
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzb
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAzb1r192:
+    Condition: Has1bAz1
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzb
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAzb1r172:
+    Condition: Has1bAz1
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzb
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAzb1r147:
+    Condition: Has1bAz1
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzb
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+###
+  RAzb2r10:
+    Condition: Has1bAz2
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzb
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAzb2r192:
+    Condition: Has1bAz2
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzb
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAzb2r172:
+    Condition: Has1bAz2
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzb
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAzb2r147:
+    Condition: Has1bAz2
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzb
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+###
+  RAzb3r10:
+    Condition: Has1bAz3
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzb
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAzb3r192:
+    Condition: Has1bAz3
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzb
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAzb3r172:
+    Condition: Has1bAz3
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzb
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAzb3r147:
+    Condition: Has1bAz3
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzb
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+###
+  RAzb4r10:
+    Condition: Has1bAz4
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzb
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAzb4r192:
+    Condition: Has1bAz4
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzb
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAzb4r172:
+    Condition: Has1bAz4
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzb
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAzb4r147:
+    Condition: Has1bAz4
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzb
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+####
+  RAzb5r10:
+    Condition: Has1bAz5
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzb
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAzb5r192:
+    Condition: Has1bAz5
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzb
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAzb5r172:
+    Condition: Has1bAz5
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzb
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAzb5r147:
+    Condition: Has1bAz5
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzb
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+# route az c
+  RAzc1r10:
+    Condition: Has1cAz1
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzc
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAzc1r192:
+    Condition: Has1cAz1
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzc
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAzc1r172:
+    Condition: Has1cAz1
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzc
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAzc1r147:
+    Condition: Has1cAz1
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzc
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+###
+  RAzc2r10:
+    Condition: Has1cAz2
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzc
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAzc2r192:
+    Condition: Has1cAz2
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzc
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAzc2r172:
+    Condition: Has1cAz2
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzc
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAzc2r147:
+    Condition: Has1cAz2
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzc
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+###
+  RAzc3r10:
+    Condition: Has1cAz3
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzc
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAzc3r192:
+    Condition: Has1cAz3
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzc
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAzc3r172:
+    Condition: Has1cAz3
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzc
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAzc3r147:
+    Condition: Has1cAz3
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzc
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+###
+  RAzc4r10:
+    Condition: Has1cAz4
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzc
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAzc4r192:
+    Condition: Has1cAz4
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzc
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAzc4r172:
+    Condition: Has1cAz4
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzc
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAzc4r147:
+    Condition: Has1cAz4
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzc
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+####
+  RAzc5r10:
+    Condition: Has1cAz5
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzc
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAzc5r192:
+    Condition: Has1cAz5
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzc
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAzc5r172:
+    Condition: Has1cAz5
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzc
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAzc5r147:
+    Condition: Has1cAz5
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzc
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+# route az d
+  RAzd1r10:
+    Condition: Has1dAz1
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzd
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAzd1r192:
+    Condition: Has1dAz1
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzd
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAzd1r172:
+    Condition: Has1dAz1
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzd
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAzd1r147:
+    Condition: Has1dAz1
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzd
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+###
+  RAzd2r10:
+    Condition: Has1dAz2
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzd
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAzd2r192:
+    Condition: Has1dAz2
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzd
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAzd2r172:
+    Condition: Has1dAz2
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzd
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAzd2r147:
+    Condition: Has1dAz2
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzd
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+####
+  RAzdr10:
+    Condition: Has1dAz3
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzd
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAzd3r192:
+    Condition: Has1dAz3
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzd
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAzd3r172:
+    Condition: Has1dAz3
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzd
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAzd3r147:
+    Condition: Has1dAz3
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzd
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+###
+  RAzd4r10:
+    Condition: Has1dAz4
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzd
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAzd4r192:
+    Condition: Has1dAz4
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzd
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAzd4r172:
+    Condition: Has1dAz4
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzd
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAzd4r147:
+    Condition: Has1dAz4
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzd
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+###
+  RAzd5r10:
+    Condition: Has1dAz5
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzd
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAzd5r192:
+    Condition: Has1dAz5
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzd
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAzd5r172:
+    Condition: Has1dAz5
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzd
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAzd5r147:
+    Condition: Has1dAz5
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzd
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+# route az e
+  RAze1r10:
+    Condition: Has1eAz1
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAze
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAze1r192:
+    Condition: Has1eAz1
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAze
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAze1r172:
+    Condition: Has1eAz1
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAze
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAze1r147:
+    Condition: Has1eAz1
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAze
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+####
+  RAze2r10:
+    Condition: Has1eAz2
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAze
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAze2r192:
+    Condition: Has1eAz2
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAze
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAze2r172:
+    Condition: Has1eAz2
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAze
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAze2r147:
+    Condition: Has1eAz2
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAze
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+####
+  RAze3r10:
+    Condition: Has1eAz3
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAze
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAze3r192:
+    Condition: Has1eAz3
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAze
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAze3r172:
+    Condition: Has1eAz3
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAze
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAze3r147:
+    Condition: Has1eAz3
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAze
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+####
+  RAze4r10:
+    Condition: Has1eAz4
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAze
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAze4r192:
+    Condition: Has1eAz4
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAze
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAze4r172:
+    Condition: Has1eAz4
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAze
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAze4r147:
+    Condition: Has1eAz4
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAze
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+####
+  RAze5r10:
+    Condition: Has1eAz5
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAze
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAze5r192:
+    Condition: Has1eAz5
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAze
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAze5r172:
+    Condition: Has1eAz5
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAze
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAze5r147:
+    Condition: Has1eAz5
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAze
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+####
+# route az f
+  RAzf1r10:
+    Condition: Has1fAz1
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzf
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAzf1r192:
+    Condition: Has1fAz1
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzf
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAzf1r172:
+    Condition: Has1fAz1
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzf
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAzf1r147:
+    Condition: Has1fAz1
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzf
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 0, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+####
+  RAzf2r10:
+    Condition: Has1fAz2
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzf
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAzf2r192:
+    Condition: Has1fAz2
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzf
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAzf2r172:
+    Condition: Has1fAz2
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzf
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAzf2r147:
+    Condition: Has1fAz2
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzf
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 1, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+####
+  RAzf3r10:
+    Condition: Has1fAz3
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzf
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAzf3r192:
+    Condition: Has1fAz3
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzf
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAzf3r172:
+    Condition: Has1fAz3
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzf
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAzf3r147:
+    Condition: Has1fAz3
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzf
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 2, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+####
+  RAzf4r10:
+    Condition: Has1fAz4
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzf
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAzf4r192:
+    Condition: Has1fAz4
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzf
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAzf4r172:
+    Condition: Has1fAz4
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzf
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAzf4r147:
+    Condition: Has1fAz4
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzf
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 3, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+####
+  RAzf5r10:
+    Condition: Has1fAz5
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzf
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C10]
+  RAzf5r192:
+    Condition: Has1fAz5
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzf
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C192]
+  RAzf5r172:
+    Condition: Has1fAz5
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzf
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C172]
+  RAzf5r147:
+    Condition: Has1fAz5
+    Type: AWS::EC2::Route
+    Properties:
+      NatGatewayId: !Ref NatAzf
+      RouteTableId: !Select [ 3, !Split [ ":", !Select [ 4, !Split [ ",", !Ref ExtSubnets ]]]]
+      DestinationCidrBlock: !FindInMap [NRoute, cidr, C147]
+###
+Outputs:
+  NatGatwayAz1a:
+    Condition: Has1aSubnet
+    Value: !Ref NatAza
+  NatGatwayAz1b:
+    Condition: Has1bSubnet
+    Value: !Ref NatAzb
+  NatGatwayAz1c:
+    Condition: Has1cSubnet
+    Value: !Ref NatAzc
+  NatGatwayAz1d:
+    Condition: Has1dSubnet
+    Value: !Ref NatAzd
+  NatGatwayAz1e:
+    Condition: Has1eSubnet
+    Value: !Ref NatAze
+  NatGatwayAz1f:
+    Condition: Has1fSubnet
+    Value: !Ref NatAzf
